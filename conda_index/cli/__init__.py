@@ -7,7 +7,6 @@ import os.path
 import click
 
 from conda_index.index import MAX_THREADS_DEFAULT, ChannelIndex, logutil
-from conda_index.utils import DEFAULT_SUBDIRS
 
 from .. import yaml
 
@@ -32,6 +31,12 @@ from .. import yaml
     help="Path to Python file that outputs metadata patch instructions from its "
     "_patch_repodata function or a .tar.bz2/.conda file which contains a "
     "patch_instructions.json file for each subdir",
+)
+@click.option(
+    "--verbose/--no-verbose",
+    default=False,
+    show_default=True,
+    help="Enable debugging output",
 )
 @click.option(
     "--channeldata/--no-channeldata",
@@ -129,8 +134,8 @@ def cli(
 
     current_index_versions = None
     if current_index_versions_file:
-        with open(current_index_versions_file) as f:
-            current_index_versions = yaml.safe_load(f)
+        with open(current_index_versions_file, encoding="utf-8") as file:
+            current_index_versions = yaml.safe_load(file)
 
     channel_index.index(
         patch_generator=patch_generator,  # or will use outdated .py patch functions
@@ -139,4 +144,4 @@ def cli(
     )
 
     if channeldata:  # about 2 1/2 minutes for conda-forge
-        channel_index.update_channeldata(rss=rss)
+        channel_index.update_channeldata(create_rss=rss)
