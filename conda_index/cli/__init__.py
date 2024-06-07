@@ -166,8 +166,8 @@ def cli(
         write_run_exports=run_exports,
         compact_json=compact,
         base_url=base_url,
+        write_current_repodata=current_repodata,
         save_fs_state=save_fs_state,
-        current_repodata=current_repodata,
     )
 
     if save_fs_state is False:
